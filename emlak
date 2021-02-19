@@ -1,0 +1,450 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include <string.h>
+FILE *dosya,*yedek;
+
+struct n {
+	char sehir[10];
+	char ilce[10];
+	char adres[20];
+	float fiyat;
+	float alan;
+	char ad[20];
+	int kira;
+	int arsa;
+	n* next;
+	n* prev;
+};
+typedef struct n node;
+struct n emlak;
+void dosyayaYazdir(node* r){
+	
+	node* iter=r;
+	dosya=fopen("emlak.txt","a+"); 
+	if(dosya == NULL){
+  		puts("Dosya acilamadi.");
+  		exit(1);
+  	}
+  	if(r!=NULL){
+  		
+  		
+  		while(iter->next!=r->prev){
+  			fprintf(dosya,"%s %s %s %.2f %.2f %s %d %d ",iter->sehir,iter->ilce,iter->adres,iter->fiyat,iter->alan,iter->ad,iter->kira,iter->arsa,iter->kira,iter->arsa);
+  			iter=iter->next;
+		  }
+		if(iter->next==r->prev){
+  			fprintf(dosya,"%s %s %s %.2f %.2f %s %d %d ",iter->sehir,iter->ilce,iter->adres,iter->fiyat,iter->alan,iter->ad,iter->kira,iter->arsa);
+		  }  
+	}
+  	fclose(dosya);
+	
+}
+
+void bastir(node*r){
+	node* iter=r;
+	printf("%s %s %s %.2f %.2f %s ",iter->sehir,iter->ilce,iter->adres,iter->fiyat,iter->alan,iter->ad);
+	iter=iter->next;
+	while(iter->next!=r->prev){
+		printf("%s %s %s %.2f %.2f %s ",iter->sehir,iter->ilce,iter->adres,iter->fiyat,iter->alan,iter->ad);
+		iter=iter->next;
+	}
+	printf("\n");
+}
+
+void evListele(int kira,int arsa,char sehir[10],char ilce[10]){
+	/*char sehir[10];
+	char ilce[10];
+	char adres[20];
+	float fiyat;
+	float alan;
+	char ad[20];
+	int kiraa;
+	int arsaa;*/
+ 	dosya = fopen("emlak.txt","r"); // r ile okuma islemi yapıyoruz.
+ 	if(dosya == NULL){
+ 	 puts("Dosya acilamadi.");
+  	 exit(1);
+ 	}
+
+ 	while(!feof(dosya)){ // !feof dosyanın sonuna geldiğinde döngüden çıkmak için
+  	fflush(stdout);//Arabellegi temizlemek için
+  	fscanf(dosya,"%s %s %s %f %f %s %d %d ",emlak.sehir,emlak.ilce,emlak.adres,&emlak.fiyat,&emlak.alan,emlak.ad,&emlak.kira,&emlak.arsa); // Önceden dosyaya yazdırdıklarımızı şimdi belleğe yazdırıyoruz
+	if(sehir!=NULL && ilce!=NULL){
+			
+		if(emlak.kira==0 && emlak.arsa==1 && kira==0 && arsa==1 && strcmp(emlak.sehir,sehir)== 0 && strcmp(emlak.ilce,ilce)==0 ){
+   		 		printf("\nSEHIR:%s  ILCE:%s  ADRES:%s  FIYAT:%.2f ALAN:%.2f SATICI:%s ",emlak.sehir,emlak.ilce,emlak.adres,emlak.fiyat,emlak.alan,emlak.ad);
+		}
+		if(emlak.kira==1 && emlak.arsa==0 && kira==1 && arsa==0 && strcmp(emlak.sehir,sehir)== 0 && strcmp(emlak.ilce,ilce)==0){
+   		 		printf("\nSEHIR:%s  ILCE:%s  ADRES:%s  FIYAT:%.2f ALAN:%.2f SATICI:%s ",emlak.sehir,emlak.ilce,emlak.adres,emlak.fiyat,emlak.alan,emlak.ad);
+		}
+		if(emlak.kira==0 && emlak.arsa==0 && kira==0 && arsa==0 && strcmp(emlak.sehir,sehir)== 0 && strcmp(emlak.ilce,ilce)==0){
+   		 		printf("\nSEHIR:%s  ILCE:%s  ADRES:%s  FIYAT:%.2f ALAN:%.2f SATICI:%s ",emlak.sehir,emlak.ilce,emlak.adres,emlak.fiyat,emlak.alan,emlak.ad);
+			}
+	}
+// *******************************************************************************************************
+	else{
+			if(emlak.kira==0 && emlak.arsa==1 && kira==0 && arsa==1 ){
+			if(emlak.sehir != NULL){ 
+   		 		printf("\nSEHIR:%s  ILCE:%s  ADRES:%s  FIYAT:%.2f ALAN:%.2f SATICI:%s ",emlak.sehir,emlak.ilce,emlak.adres,emlak.fiyat,emlak.alan,emlak.ad);
+  		 	}
+		}
+		if(emlak.kira==1 && emlak.arsa==0 && kira==1 && arsa==0){
+			if(emlak.sehir != NULL){
+   		 		printf("\nSEHIR:%s  ILCE:%s  ADRES:%s  FIYAT:%.2f ALAN:%.2f SATICI:%s ",emlak.sehir,emlak.ilce,emlak.adres,emlak.fiyat,emlak.alan,emlak.ad);
+  		 	}
+  		 
+		}
+		if(emlak.kira==0 && emlak.arsa==0 && kira==0 && arsa==0){
+			if(emlak.sehir!=NULL){
+   		 		printf("\nSEHIR:%s  ILCE:%s  ADRES:%s  FIYAT:%.2f ALAN:%.2f SATICI:%s ",emlak.sehir,emlak.ilce,emlak.adres,emlak.fiyat,emlak.alan,emlak.ad);
+			   	}
+			}
+		}
+	}
+
+ 	fclose(dosya);
+ 	puts("\nBilgiler listelendi ....");
+}	
+
+node* ekle(node* r, float fiyat,float alan,char sehir[10],char ilce[10],char adres[20],char ad[20],int kira,int arsa){
+	if (r == NULL) {//Link list boşsa
+		r = (node*)malloc(sizeof(node));
+		r->next = r->prev;
+		r->prev = r->next;
+		for(int i=0;i<10;i++){
+			r->sehir[i] = sehir[i];
+			r->ilce[i]=ilce[i];
+		}
+		for(int i=0;i<20;i++){
+			r->adres[i]=adres[i];
+			r->ad[i]=ad[i];
+		}
+		r->fiyat = fiyat;
+		r->alan = alan;
+		r->kira=kira;
+		r->arsa=arsa;
+		
+		return r;
+	}
+	node* iter=r;
+	while(iter->next!=r->prev){
+		iter=iter->next;
+	}
+	iter->next=(node*)malloc(sizeof(node));
+	iter->next->fiyat=fiyat;
+	iter->next->alan=alan;
+	for(int i=0;i<10;i++){
+			iter->next->sehir[i] = sehir[i];
+			iter->next->ilce[i]=ilce[i];
+		}
+	for(int i=0;i<20;i++){
+		iter->next->adres[i]=adres[i];
+		iter->next->ad[i]=ad[i];
+	}
+	iter->next->kira=kira;
+	iter->next->arsa=arsa;
+	
+	iter->next->next=r->prev;
+	iter->next->prev=iter;
+	r->prev=iter->next->next;
+	return r;
+}
+
+void dosyadanRoota(node*r){
+	char sehir[10];
+	char ilce[10];
+	char adres[20];
+	float fiyat;
+	float alan;
+	char ad[20];
+	bool kira;
+	 while(!feof(dosya)){ // !feof dosyanın sonuna geldiğinde döngüden çıkmak için
+  		fflush(stdout);//Arabellegi temizlemek için
+  		fscanf(dosya,"%s %s %s %.2f %.2f %s ",sehir,ilce,adres,fiyat,alan,ad); // Önceden dosyaya yazdırdıklarımızı şimdi belleğe yazdırıyoruz	}
+  		//ekle(r,fiyat,alan,sehir,ilce,adres,ad);
+	}
+	
+	fclose(dosya);
+
+}
+
+node* ekleSirali(node* r, float fiyat,float alan,char sehir[10]) {
+
+	if (r == NULL) {//Link list boşsa
+		r = (node*)malloc(sizeof(node));
+		r->next = r;
+		r->prev = r;
+		for(int i=0;i<10;i++){
+			r->sehir[i] = sehir[i];
+		}
+	
+		//r->adres = adres;
+		r->fiyat = fiyat;
+		r->alan = alan;
+		//r->ad = ad;
+		return r;
+	}
+	if (r->fiyat >fiyat)//ilk elemandan küçük durumu
+	{
+		node* temp = (node*)malloc(sizeof(node));
+		for(int i=0;i<10;i++){
+			temp->sehir[i] = sehir[i];
+		}
+		/*temp->sehir = sehir;
+		temp->adres = adres;*/
+		temp->fiyat = fiyat;
+		temp->alan = alan;
+		//temp->ad = ad;
+		temp->next = r;
+		node* iter = r;
+		while (iter->next != r) {
+			iter = iter->next;
+		}
+		iter->next = temp->prev;
+		r->prev = temp;
+		return temp;
+	}
+
+	node* iter = (node*)malloc(sizeof(node));
+
+	while (iter->next!=r && iter->next->fiyat < fiyat)
+	{
+		iter = iter->next;
+	}
+	node* temp = (node*)malloc(sizeof(node));
+	temp->next = iter->next;
+	iter->next = temp;
+	temp->prev = iter;
+	if (temp->next != r)
+	{
+		temp->next->prev = temp;
+	}
+	for(int i=0;i<10;i++){
+			temp->sehir[i] = sehir[i];
+	}
+	//temp->sehir = sehir;
+//	temp->adres = adres;
+	temp->fiyat = fiyat;
+	temp->alan = alan;
+//	temp->ad = ad;
+	return r;
+}
+
+void emlakSilme(void){
+
+	
+ int durum=0;// durum 1 olduğunda kayit silinmis demektir
+ char adres[20];
+ printf("\nSilinecek emlakin adresini giriniz : ");
+ scanf("%s",adres);
+ dosya = fopen("emlak.txt","r");// sinif dosyasından sadece okuma yapilacak bu yüzden r kullanıyoruz.
+ yedek = fopen("yedek.txt","w");// yedek dosyasına yazma islemi yapacağız.
+ if(dosya == NULL){
+  puts("Dosya acilamadi");
+  exit(1);
+ }
+ while(!feof(dosya)){
+ 	fscanf(dosya,"%s %s %s %f %f %s %d %d ",emlak.sehir,emlak.ilce,emlak.adres,&emlak.fiyat,&emlak.alan,emlak.ad,&emlak.kira,&emlak.arsa); // dosyayı okuyoruz ve degerleri belleğe yazıyoruz
+    if(strcmp(adres,emlak.adres) != 0){ // Eğer girilen numara dosyada okunan değere eşit değilse if döngüsüne girer.
+     fprintf(yedek,"%s %s %s %f %f %s %d %d ",emlak.sehir,emlak.ilce,emlak.adres,emlak.fiyat,emlak.alan,emlak.ad,emlak.kira,emlak.arsa);
+     /* Okunan değer yedek dosyasına yazılır*/
+     
+    }
+    else{durum=1;}
+ }
+ fclose(dosya);
+ fclose(yedek);
+ if(durum == 1){// durum=1 ise okunan değer silinmiş demektir o halde sinif.txt dosyasını sileriz yedek.txt adını sinif.txt olarak değiştiririz
+  remove("emlak.txt"); //silmek icin
+  rename("yedek.txt","emlak.txt"); // isim değişikliği için
+  puts("Silme islemi tamamlandi devam etmek icin bir tusa basin");
+ } 
+ else{ // durum=1 değilse okunan değer silinmemiştir, daha doğrusu girilen numara dosyada bulunmamaktadır
+  remove("yedek.txt"); // yedek dosyasını kullanamadıgımızdan siliyoruz
+  printf(" %s adresinde bir emlak bulunamadi devam etmek icin bir tusa basin ...",adres);
+ }
+ fflush(stdin);
+}
+
+void emlakDegistirme(void){
+ int durum=0,kira=0,arsa=0,j;//durum =0 ise değiştirme işlemi gerçekleşmemiştir.
+ char adres[20];
+ printf("\nBilgilerini degistireceginiz emlakin adresini giriniz: ");
+ scanf("%s",adres);
+ dosya = fopen("emlak.txt","r");
+ yedek = fopen("yedek.txt","w");
+ if(dosya == NULL){
+  puts("Dosya acilamadi");
+  exit(1);
+ }
+ while(!feof(dosya)){
+  fscanf(dosya,"%s %s %s %f %f %s %d %d ",emlak.sehir,emlak.ilce,emlak.adres,&emlak.fiyat,&emlak.alan,emlak.ad,&emlak.kira,&emlak.arsa); //Dosyadaki değeri belleğe yazıyoruz.
+  if(strcmp(adres,emlak.adres) != 0){
+   fprintf(yedek,"%s %s %s %f %f %s %d %d ",emlak.sehir,emlak.ilce,emlak.adres,emlak.fiyat,emlak.alan,emlak.ad,emlak.kira,emlak.arsa);//dosyadan okunup belleğe yazılan değerler yedeğe yazılır.
+  }
+  else{//Değerler değiştirilir.
+   	  		fflush(stdin);
+	 		printf("Sehir:");
+			scanf("%s",emlak.sehir);
+			printf("Ilce:");
+			scanf("%s",emlak.ilce);
+			printf("Adres:");
+			scanf("%s",emlak.adres);
+			printf("Fiyat:");
+			scanf("%f",&emlak.fiyat);
+			printf("Alan:");
+			scanf("%f",&emlak.alan);
+			printf("Satici Adi:");
+			scanf("%s",emlak.ad);
+			printf("Arsa mi:(e=1/h=0)");
+			scanf("%d",&j);
+			if(j==1){
+				arsa=1;
+				kira=0;
+			}
+			else{
+				printf("Kiralik icin 1 satilik icin 0 basiniz:");
+				scanf("%d",&j);
+				if(j==1){
+					kira=1;
+					arsa=0;
+				}
+				else{
+					kira=0;
+				}
+			}
+      fprintf(yedek,"%s %s %s %f %f %s %d %d ",emlak.sehir,emlak.ilce,emlak.adres,emlak.fiyat,emlak.alan,emlak.ad,kira,arsa); //verileri yedek dosyasına yazdır
+      durum=1; // değişme yapıldı.
+  }
+ }
+
+ fclose(dosya);
+ fclose(yedek);
+ if(durum == 1){ //değişme islemi yapilirsa
+  remove("emlak.txt");
+  rename("yedek.txt","emlak.txt");
+  printf("Emlak bilgileri degistirildi ..\n");
+ }
+ else{
+  remove("yedek.txt");
+  printf("Ilgili emlak bulunamadi devam etmek icin bir tusa basin...\n");
+ }
+ fflush(stdin);
+}
+
+int main() {
+	system("cls");
+	char sehir[10];
+	char ilce[10];
+	char adres[20];
+	float fiyat;
+	float alan;
+	char ad[20];
+	int kira=0;	
+	int arsa=0;
+	int sec = 0,j;
+	node* root;
+	root = NULL;
+	printf("1-Kiralik Ev Ara\n2-Satilik Ev Ara\n3-Satilik Arsa Ara\n4-Emlak Ekle\n5-Emlak Sil\n6-Emlak Degistirme\n7-Cikis\n");
+	do{
+		scanf("%d", &sec);
+		switch (sec) {
+		case 1:
+			printf("Kiralik Evler\n");
+			evListele(1,0,NULL,NULL);
+			printf("Filtre lemek ister misiniz(e=1/h=0)");
+			scanf("%d",&j);
+			if(j==1){
+				printf("Sehir:");
+				scanf("%s",sehir);
+				printf("Ilce:");
+				scanf("%s",ilce);
+				evListele(1,0,sehir,ilce);
+			}
+			break;
+		case 2:
+			printf("Satilik Evler\n");
+			evListele(0,0,NULL,NULL);
+			printf("Filtre lemek ister misiniz(e=1/h=0)");
+			scanf("%d",&j);
+			if(j==1){
+				printf("Sehir:");
+				scanf("%s",sehir);
+				printf("Ilce:");
+				scanf("%s",ilce);
+				evListele(0,0,sehir,ilce);
+			}
+			break;
+		case 3:
+			printf("Satilik Arsalar\n");
+			evListele(0,1,NULL,NULL);
+			printf("Filtre lemek ister misiniz(e=1/h=0)");
+			scanf("%d",&j);
+			if(j==1){
+				printf("Sehir:");
+				scanf("%s",sehir);
+				printf("Ilce:");
+				scanf("%s",ilce);
+				evListele(0,1,sehir,ilce);
+			}
+			break;
+		case 4:
+			label:
+			printf("Sehir:");
+			scanf("%s",sehir);
+			printf("Ilce:");
+			scanf("%s",ilce);
+			printf("Adres:");
+			scanf("%s",adres);
+			printf("Fiyat:");
+			scanf("%f",&fiyat);
+			printf("Alan:");
+			scanf("%f",&alan);
+			printf("Satici Adi:");
+			scanf("%s",ad);
+			printf("Arsa mi:(e=1/h=0)");
+			scanf("%d",&j);
+			if(j==1){
+				arsa=1;
+				kira=0;
+			}
+			else{
+				printf("Kiralik icin 1 satilik icin 0 basiniz:");
+				scanf("%d",&j);
+				if(j==1){
+					kira=1;
+					arsa=0;
+				}
+				else{
+					kira=0;
+				}
+				
+			}
+			root=ekle(root,fiyat,alan,sehir,ilce,adres,ad,kira,arsa);
+			printf("Ana Menuye donmek ister misiniz?(evet=1/Hayir=0)");
+			scanf("%d",&j);
+			if(j==1){
+				dosyayaYazdir(root);
+				root=NULL;
+				break;
+			}
+			goto label;
+			break;
+		case 5:
+			emlakSilme();
+			break;
+		case 6:
+			emlakDegistirme();
+			break;
+		case 7:
+			return 0;
+		default:
+			printf("Yanlis tus.");
+			break;
+		}
+
+	}
+	while (1);
+
+	return 0;
+}
